@@ -7,6 +7,8 @@ class ColorConstant{
   static const Color backgroundOneColor = Color(0xffffffff);
   static const Color backgroundTwoColor = Color(0xff444444);
   static const Color backgroundThreeColor = Color(0xff554e44);
+  static const Color backgroundFourColor = Color(0xff6fbe44);
+
   static const Color buttonOneColor = Color(0xfff74906);
   static const Color buttonTwoColor = Color(0xff006899);
   static const Color buttonThreeColor = Color(0xff7c9ffa);

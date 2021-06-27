@@ -1,7 +1,10 @@
+import 'package:dictionary_personalization/common/utilities/colors.dart';
 import 'package:dictionary_personalization/common/utilities/constants.dart';
 import 'package:dictionary_personalization/models/account_model.dart';
+import 'package:dictionary_personalization/routes/routes.dart';
 import 'package:dictionary_personalization/view_models/auth_viewmodel.dart';
 import 'package:dictionary_personalization/views/components/drawer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class MyProfile extends StatefulWidget {
@@ -14,8 +17,8 @@ class MyProfile extends StatefulWidget {
 
 class _MyProfile extends State<MyProfile> {
 
-  String name = "";
-  String email = "";
+  String name = "asd";
+  String email = "asd";
 
   AuthViewModel authViewModel = new AuthViewModel();
 
@@ -44,7 +47,7 @@ class _MyProfile extends State<MyProfile> {
         body: Stack(
           children: <Widget>[
             ClipPath(
-              child: Container(color: Colors.black.withOpacity(0.8)),
+              child: Container(color: ColorConstant.backgroundFourColor.withOpacity(0.8)),
               clipper: getClipper(),
             ),
             Positioned(
@@ -66,9 +69,11 @@ class _MyProfile extends State<MyProfile> {
                             ),
                         ),
                     ),
+
                     SizedBox(height: 90.0),
+
                     Text(
-                      this.name,
+                      "this.name",
                       style: TextStyle(
                           fontSize: 30.0,
                           fontWeight: FontWeight.bold,
@@ -76,54 +81,113 @@ class _MyProfile extends State<MyProfile> {
                     ),
                     SizedBox(height: 15.0),
                     Text(
-                      this.email,
+                      "this.email",
                       style: TextStyle(
                           fontSize: 17.0,
                           fontStyle: FontStyle.italic,
                           fontFamily: 'Montserrat'),
                     ),
                     SizedBox(height: 25.0),
+
                     Container(
-                        height: 30.0,
-                        width: 95.0,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(20.0),
-                          shadowColor: Colors.greenAccent,
-                          color: Colors.green,
-                          elevation: 7.0,
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: Center(
-                              child: Text(
-                                'Edit Name',
-                                style: TextStyle(color: Colors.white, fontFamily: 'Montserrat'),
+                      height: 50.0,
+                      width: 200.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.redAccent,
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(context, Routes.home);
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30.0),
+                                child: Text("Trang chủ", style: TextStyle(color: Colors.white),),
                               ),
-                            ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(right: 30.0),
+                                child: Icon(Icons.home_outlined, color: Colors.white70,),
+                              ),
+                            ],
                           ),
-                        )),
+                        ),
+                      ),
+                    ),
+
                     SizedBox(height: 25.0),
+
                     Container(
-                        height: 50.0,
-                        width: 130.0,
-                        child: Material(
-                          borderRadius: BorderRadius.circular(20.0),
-                          shadowColor: Colors.redAccent,
-                          color: Colors.red,
-                          elevation: 7.0,
-                          child: GestureDetector(
-                            onTap: () {
-                              authViewModel.deleteAccessToken("");
-                            },
-                            child: Center(
-                              child: Text(
-                                Const.SIGN_OUT,
-                                style: TextStyle(color: Colors.white, fontFamily: 'Montserrat'),
+                      height: 50.0,
+                      width: 200.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.redAccent,
+                        color: Colors.green,
+                        elevation: 7.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            authViewModel.deleteAccessToken("");
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30.0),
+                                child: Text("Cài đặt", style: TextStyle(color: Colors.white),),
                               ),
-                            ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(right: 30.0),
+                                child: Icon(Icons.settings_outlined, color: Colors.white70,),
+                              ),
+                            ],
                           ),
-                        ))
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 25.0),
+
+                    Container(
+                      height: 50.0,
+                      width: 200.0,
+                      child: Material(
+                        borderRadius: BorderRadius.circular(20.0),
+                        shadowColor: Colors.redAccent,
+                        color: Colors.red,
+                        elevation: 7.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            authViewModel.deleteAccessToken("");
+                          },
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(left: 30.0),
+                                child: Text(Const.SIGN_OUT, style: TextStyle(color: Colors.white),),
+                              ),
+
+                              Padding(
+                                padding: const EdgeInsets.only(right: 30.0),
+                                child: Icon(Icons.logout_outlined, color: Colors.white70,),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
-                ))
+                ),
+            ),
           ],
         ),
       drawer: AppDrawer(),

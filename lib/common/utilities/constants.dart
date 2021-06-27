@@ -9,6 +9,8 @@ class Const {
   static const SIGN_OUT = "Đăng xuất";
   static const SIGN_UP = "Đăng ký";
   static const FORGET_PASSWORD = "Quên mật khẩu?";
+  static const SUCCESSFUL_STATUS = "successful";
+  static const FAILED_STATUS = "failed";
 
   static const String BASE_API_URL = "http://192.168.1.113:8000/";
   static const String API_CREATE_NOTE_URL = "api/note/create";
@@ -20,5 +22,6 @@ class Const {
   static const String DETAIL_UNIT_KNOWLEDGE_SCREEN = "detailUnitKnowledgeScreen";
   static const String LOADING_SCREEN = "loadingScreen";
 
-
+  static const String DISPATCH_GET_MESSAGE_RESULT_AUTH = "Get_Message_Result_Auth";
+  static const String DISPATCH_CHANGE_TO_LOGIN_SCREEN = "Change_To_Login_Screen";
 }

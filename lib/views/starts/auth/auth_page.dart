@@ -1,9 +1,10 @@
+import 'dart:async';
+import 'package:dictionary_personalization/common/helper/dispatch_listener_event.dart';
 import 'package:dictionary_personalization/common/utilities/colors.dart';
 import 'package:dictionary_personalization/common/utilities/constants.dart';
+import 'package:dictionary_personalization/routes/routes.dart';
 import 'package:dictionary_personalization/view_models/auth_viewmodel.dart';
 import 'package:dictionary_personalization/views/components/drawer.dart';
-import 'package:dictionary_personalization/views/starts/widget/my_button.dart';
-import 'package:dictionary_personalization/views/starts/widget/my_text_field.dart';
 import 'package:flutter/material.dart';
 
 class AuthPage extends StatefulWidget {
@@ -16,11 +17,29 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    DispatchListenerEvent.listener(
+        Const.DISPATCH_GET_MESSAGE_RESULT_AUTH, getMessageResultAuth, Const.DISPATCH_GET_MESSAGE_RESULT_AUTH);
+
+  }
+
   final _formKey = GlobalKey<FormState>();
 
   bool isCheck = false;
   bool isLogin = false;
-  bool isSignup = true;
+  bool isSignUp = true;
+
+  bool isRegistering = false;
+  bool isRegistered = false;
+  bool isLogging = false;
+  bool isLogged = false;
+
+  String result = ""; // "successful" or "failed"
+  String messageResult = ""; // "login successful" or "login failed"
 
   String name = "";
   String email = "";
@@ -37,6 +56,42 @@ class _AuthPageState extends State<AuthPage> {
   {
     userAccount = {"name" : name, "email" : email, "password" : password};
     await AuthViewModel().register(Const.API_REGISTER_USER_URL, userAccount);
+  }
+
+  getMessageResultAuth(String data)
+  {
+    var dataAfter = data.split('_');
+
+    setState(() {
+      this.result = dataAfter[1]; // result : success or failed
+      this.messageResult = dataAfter[2]; // message:
+    });
+
+    // TODO: turn of notification
+    Timer(Duration(seconds: 5), () {
+      setState(() {
+        this.result = "";
+        this.messageResult = "";
+      });
+
+      if(dataAfter[1] == Const.SUCCESSFUL_STATUS && dataAfter[0] == "login")
+      {
+        Navigator.pop(context);
+        Navigator.pushNamed(context, Routes.profile);
+      }
+
+      if(dataAfter[1] == Const.SUCCESSFUL_STATUS && dataAfter[0] == "register")
+      {
+        this.isLogin = true;
+      }
+
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    DispatchListenerEvent.remove(Const.DISPATCH_GET_MESSAGE_RESULT_AUTH, Const.DISPATCH_GET_MESSAGE_RESULT_AUTH);
   }
 
   @override
@@ -58,7 +113,7 @@ class _AuthPageState extends State<AuthPage> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      isSignup = true;
+                      isSignUp = true;
                       isLogin = false;
                     });
                   },
@@ -85,7 +140,7 @@ class _AuthPageState extends State<AuthPage> {
                 InkWell(
                   onTap: () {
                     setState(() {
-                      isSignup = false;
+                      isSignUp = false;
                       isLogin = true;
 
                       _formKey.currentState?.reset();
@@ -254,49 +309,56 @@ class _AuthPageState extends State<AuthPage> {
                         ],
                       ),
                       SizedBox(
-                        height: 10,
-                      ),
-
-                      ListTile(
-                        leading: Container(
-                          height: 48,
-                          width: 135,
-                          child: TextButton(
-                            child: Text(isLogin ? Const.SIGN_IN: Const.SIGN_UP, style: TextStyle(color: ColorConstant.buttonFiveColor)),
-                            onPressed: (){
-                              if (_formKey.currentState!.validate()) {
-                                //TODO: Send data to server
-                                isLogin == true ?
-                                loginToServer(name, email, password) :
-                                registerToServer(name, email, password);
-
-                                FocusScope.of(context).unfocus();
-                              }
-                            },
-                            style: ButtonStyle(
-                                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                                    RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(15.0),
-                                        side: BorderSide(color: ColorConstant.buttonFiveColor)
-                                    )
-                                )
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      SizedBox(
-                        height: 50,
+                        height: 30,
                       ),
 
                       Container(
-                        margin: EdgeInsets.only(left: 30, top: 100, right: 30, bottom: 50),
+                          alignment: Alignment.center,
+                          child: Container(
+                            height: 48,
+                            width: 135,
+                            child: TextButton(
+                              child: Text(isLogin ? Const.SIGN_IN: Const.SIGN_UP, style: TextStyle(color: ColorConstant.buttonFiveColor)),
+                              onPressed: (){
+                                if (_formKey.currentState!.validate()) {
+                                  //TODO: Send data to server
+                                  isLogin == true ?
+                                  loginToServer(name, email, password) :
+                                  registerToServer(name, email, password);
+
+                                  FocusScope.of(context).unfocus();
+                                }
+                              },
+                              style: ButtonStyle(
+                                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                                      RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(15.0),
+                                          side: BorderSide(color: ColorConstant.buttonFiveColor)
+                                      )
+                                  )
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      SizedBox(
+                        height: 30,
+                      ),
+
+                      Center(
+                        child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                        ),
+                      ),
+                      this.messageResult != "" ?
+                      Container(
+                        margin: EdgeInsets.only(left: 30, top: 50, right: 30, bottom: 50),
                         // height: double.infinity,
                         // width: double.infinity,
                         height: 50.0,
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: this.result == Const.SUCCESSFUL_STATUS ? Colors.green : Colors.redAccent,
                           borderRadius: BorderRadius.only(
                               topLeft: Radius.circular(10),
                               topRight: Radius.circular(10),
@@ -312,8 +374,12 @@ class _AuthPageState extends State<AuthPage> {
                             ),
                           ],
                         ),
-                        child: Center(child: Text("Đăng ký thành công!")),
+                        child: Center(child: Text(
+                            this.messageResult,
+                          style: TextStyle(color: Colors.white),
+                        )),
                       )
+                          : Container()
                     ],
                   ),
                 ),

@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
+import 'package:dictionary_personalization/common/helper/dispatch_listener_event.dart';
 import 'package:dictionary_personalization/common/services/networking.dart';
+import 'package:dictionary_personalization/common/utilities/constants.dart';
 import 'package:dictionary_personalization/models/account_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,6 +27,15 @@ class AuthViewModel {
     print("${data["password"]}");
 
     var response = await networkHelper.postData(dataToSend);
+
+    if(response["result"] == Const.SUCCESSFUL_STATUS || response["result"] == Const.FAILED_STATUS)
+    {
+      var messageData = "register" + "_" + response["result"] + "_" + response["message"];
+
+      DispatchListenerEvent.dispatch(Const.DISPATCH_GET_MESSAGE_RESULT_AUTH, messageData);
+
+    }
+
   }
 
   Future<dynamic> login(String apiUrl, Map<String, dynamic> data) async
@@ -44,7 +56,7 @@ class AuthViewModel {
 
     print(response["result"]);
 
-    if(response["result"] == "successful")
+    if(response["result"] == Const.SUCCESSFUL_STATUS)
       {
         await saveAccessToken(response["accessToken"]);
 
@@ -52,6 +64,17 @@ class AuthViewModel {
 
         accountModel = AccountModel.fromJson(userResponse);
 
+        var messageData = "login" + "_" + response["result"] + "_" + response["message"];
+
+        DispatchListenerEvent.dispatch(Const.DISPATCH_GET_MESSAGE_RESULT_AUTH, messageData);
+
+      }
+
+    if(response["result"] == Const.FAILED_STATUS)
+      {
+        var messageData = "login" + "_" + response["result"] + "_" + response["message"];
+
+        DispatchListenerEvent.dispatch(Const.DISPATCH_GET_MESSAGE_RESULT_AUTH, messageData);
       }
   }
 
